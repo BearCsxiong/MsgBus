@@ -8,10 +8,6 @@ import java.lang.annotation.Target;
 import me.csxiong.msgbus.entity.ThreadMode;
 
 /**
- * Created by csxiong on 2018/8/24.
- */
-
-/**
  * 注解的作用
  * 1.可以解释程序含义
  * 2.被其他程序使用
@@ -29,6 +25,16 @@ import me.csxiong.msgbus.entity.ThreadMode;
  * <p>
  * 注解在哪使用?
  * 可以在package,class,mthod,field等 相等于加了辅助信息   我们可以通过反射机制实现对这些元数据的访问
+ */
+
+/**
+ * -------------------------------------------------------------------------------
+ * |
+ * | desc : 消息接收者目标接收方法使用注解
+ * |
+ * |--------------------------------------------------------------------------------
+ * | on 2018/8/26 created by csxiong
+ * |--------------------------------------------------------------------------------
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

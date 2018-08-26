@@ -15,11 +15,17 @@ import me.csxiong.msgbus.annotation.Tag;
 import me.csxiong.msgbus.entity.MsgType;
 
 /**
- * Created by csxiong on 2018/8/25.
+ * -------------------------------------------------------------------------------
+ * |
+ * | desc : 针对注解OnReceiveMsg的扫描工具
+ * |
+ * |--------------------------------------------------------------------------------
+ * | on 2018/8/26 created by csxiong
+ * |--------------------------------------------------------------------------------
  */
-
 public class OnReceiveMsgScanner implements Scanner<OnReceiveMsg> {
 
+    //缓存所有消息接收者中参数的ParentClasses
     private static final ConcurrentMap<Class<?>, Set<Class<?>>> msgTypeCache = new ConcurrentHashMap<>();
 
     @Override

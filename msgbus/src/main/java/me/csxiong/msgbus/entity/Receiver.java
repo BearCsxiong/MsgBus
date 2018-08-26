@@ -9,11 +9,22 @@ import me.csxiong.msgbus.ExPoster;
 import me.csxiong.msgbus.Scanner.OnReceiveMsgScanner;
 
 /**
- * Created by csxiong on 2018/8/25.
+ * -------------------------------------------------------------------------------
+ * |
+ * | desc : 接收者,基于观察者模式触发消息接收
+ * |
+ * |--------------------------------------------------------------------------------
+ * | on 2018/8/26 created by csxiong
+ * |--------------------------------------------------------------------------------
  */
-
 public class Receiver implements Observer {
 
+    /**
+     * 观察者接收方法
+     *
+     * @param observable 订阅的消息类型
+     * @param o          消息
+     */
     @Override
     public void update(Observable observable, final Object o) {
         //需要切换线程则对应切换线程
@@ -73,6 +84,11 @@ public class Receiver implements Observer {
         this.targetMethod = targetMethod;
     }
 
+    /**
+     * 消息具体接收者，接收消息方法
+     *
+     * @param obj 消息
+     */
     public void receiveMsg(Object obj) {
         try {
             targetMethod.invoke(methodHolder, obj);

@@ -5,10 +5,14 @@ import android.os.Looper;
 
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-/**
- * Created by csxiong on 2018/8/26.
- */
-
+/**-------------------------------------------------------------------------------
+*|
+*| desc : 线程切换工具,如RxBus依赖的RxJava切换线程
+*|
+*|--------------------------------------------------------------------------------
+*| on 2018/8/26 created by csxiong
+*|--------------------------------------------------------------------------------
+*/
 public class ExPoster {
 
     private ExPoster() {

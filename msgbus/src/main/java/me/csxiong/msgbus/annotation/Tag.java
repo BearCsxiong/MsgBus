@@ -6,7 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by csxiong on 2018/8/25.
+ * -------------------------------------------------------------------------------
+ * |
+ * | desc : 目标消息接收者,定义此接收方法接收标志
+ * |
+ * |--------------------------------------------------------------------------------
+ * | on 2018/8/26 created by csxiong
+ * |--------------------------------------------------------------------------------
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

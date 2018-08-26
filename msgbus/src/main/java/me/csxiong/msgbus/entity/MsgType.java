@@ -4,9 +4,14 @@ import java.util.Observable;
 import java.util.Set;
 
 /**
- * Created by csxiong on 2018/8/25.
+ * -------------------------------------------------------------------------------
+ * |
+ * | desc : 消息类型,基于观察者模式触发消息传递
+ * |
+ * |--------------------------------------------------------------------------------
+ * | on 2018/8/26 created by csxiong
+ * |--------------------------------------------------------------------------------
  */
-
 public class MsgType extends Observable {
 
     private Set<Class<?>> msgTypeClasses;

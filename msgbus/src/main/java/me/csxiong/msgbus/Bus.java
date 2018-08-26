@@ -17,9 +17,14 @@ import me.csxiong.msgbus.entity.Receiver;
 import me.csxiong.msgbus.entity.ThreadMode;
 
 /**
- * 1.实现线程切换
+ * -------------------------------------------------------------------------------
+ * |
+ * | desc : 具体MsgBus执行者,以及使用方法
+ * |
+ * |--------------------------------------------------------------------------------
+ * | on 2018/8/26 created by csxiong
+ * |--------------------------------------------------------------------------------
  */
-
 public class Bus {
 
     private Scanner<OnReceiveMsg> scanner;
@@ -32,6 +37,11 @@ public class Bus {
 
     private static final ConcurrentMap<Object, Set<Channel>> channels = new ConcurrentHashMap<>();
 
+    /**
+     * 注册接收者消息事件
+     *
+     * @param obj 消息接收者
+     */
     public void register(final Object obj) {
         if (obj == null) {
             throw new IllegalArgumentException("无法为空对象注册");
@@ -94,6 +104,12 @@ public class Bus {
 
     }
 
+    /**
+     * 判断此消息接收者是否接收此消息
+     *
+     * @param obj 消息接收者
+     * @return 此消息接收者是否已注册MsgBus true 已注册 false 未注册
+     */
     public boolean isRegister(Object obj) {
         for (Object _obj : channels.keySet()) {
             if (_obj == obj) {
@@ -103,12 +119,18 @@ public class Bus {
         return false;
     }
 
+    /**
+     * 注销接收者消息事件
+     *
+     * @param obj 消息接收者
+     */
     public void unregister(Object obj) {
         //TODO 解绑
         Set<Channel> receivers = null;
         for (Object _obj : channels.keySet()) {
             if (_obj == obj) {
                 receivers = channels.remove(_obj);
+                break;
             }
         }
         if (receivers == null) {
@@ -122,10 +144,21 @@ public class Bus {
         }
     }
 
+    /**
+     * 发送消息
+     *
+     * @param msg 消息
+     */
     public void post(Object msg) {
         post(msg, Tag.DEFAULT);
     }
 
+    /**
+     * 发送消息
+     *
+     * @param msg 消息
+     * @param tag 标记
+     */
     public void post(Object msg, String tag) {
         if (msg == null) {
             throw new IllegalArgumentException("发送的消息不能为空");
