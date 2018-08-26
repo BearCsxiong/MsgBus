@@ -1,0 +1,2 @@
+# MsgBus
+一个汲取EventBus和RxBus思想仿制的消息传递框架
