@@ -53,14 +53,14 @@ public class OnReceiveMsgScanner implements Scanner<OnReceiveMsg> {
     }
 
     public static Set<Class<?>> getParentClasses(Class<?> concreteClass) {
-        Set<Class<?>> classes = msgTypeCache.get(concreteClass);
+        Class<?> exClasses = ex(concreteClass);
+        Set<Class<?>> classes = msgTypeCache.get(exClasses);
         if (classes != null) {
             return classes;
-
         }
         classes = new HashSet<>();
         List<Class<?>> parents = new LinkedList<>();
-        parents.add(concreteClass);
+        parents.add(exClasses);
 
         while (!parents.isEmpty()) {
             Class<?> clazz = parents.remove(0);
@@ -71,7 +71,31 @@ public class OnReceiveMsgScanner implements Scanner<OnReceiveMsg> {
                 parents.add(parent);
             }
         }
-        msgTypeCache.put(concreteClass, classes);
+        msgTypeCache.put(exClasses, classes);
         return classes;
+    }
+
+    public static Class<?> ex(Class<?> target) {
+        String className = target.getName();
+        //->基本类型无法订阅bug
+        switch (className) {
+            case "byte":
+                return Byte.class;
+            case "char":
+                return Character.class;
+            case "int":
+                return Integer.class;
+            case "short":
+                return Short.class;
+            case "long":
+                return Long.class;
+            case "boolean":
+                return Boolean.class;
+            case "float":
+                return Float.class;
+            case "double":
+                return Double.class;
+        }
+        return target;
     }
 }

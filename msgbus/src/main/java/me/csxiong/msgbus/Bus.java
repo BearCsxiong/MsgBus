@@ -1,5 +1,7 @@
 package me.csxiong.msgbus;
 
+import android.util.Log;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.LinkedHashSet;
@@ -33,9 +35,9 @@ public class Bus {
         this.scanner = new OnReceiveMsgScanner();
     }
 
-    private static final ConcurrentMap<MsgType, Set<Receiver>> msg2Receivers = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<MsgType, Set<Receiver>> msgObservableReceivers = new ConcurrentHashMap<>();
 
-    private static final ConcurrentMap<Object, Set<Channel>> channels = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<Object, Set<Channel>> receiversSubscribeChannels = new ConcurrentHashMap<>();
 
     /**
      * 注册接收者消息事件
@@ -46,7 +48,7 @@ public class Bus {
         if (obj == null) {
             throw new IllegalArgumentException("无法为空对象注册");
         }
-        for (Object _obj : channels.keySet()) {
+        for (Object _obj : receiversSubscribeChannels.keySet()) {
             if (_obj == obj) {
                 throw new IllegalArgumentException("该对象已注册!");
             }
@@ -76,19 +78,19 @@ public class Bus {
                 Set<MsgType> msgTypes = scanner.scanAllMsgType(onReceiveMsg, parameterTypes[0]);
                 for (MsgType msgType : msgTypes) {
                     Receiver receiver = new Receiver(threadMode, obj, method);
-                    if (!msg2Receivers.containsKey(msgType)) {
+                    if (!msgObservableReceivers.containsKey(msgType)) {
                         LinkedHashSet<Receiver> receivers = new LinkedHashSet<>();
                         receivers.add(receiver);
                         msgType.addObserver(receiver);
-                        msg2Receivers.put(msgType, receivers);
+                        msgObservableReceivers.put(msgType, receivers);
                         channels.add(new Channel(msgType, receiver));
                         continue;
                     }
-                    for (MsgType _msgType : msg2Receivers.keySet()) {
+                    for (MsgType _msgType : msgObservableReceivers.keySet()) {
                         if (!msgType.equals(_msgType)) {
                             continue;
                         }
-                        Set<Receiver> receivers = msg2Receivers.get(_msgType);
+                        Set<Receiver> receivers = msgObservableReceivers.get(_msgType);
                         receivers.add(receiver);
                         _msgType.addObserver(receiver);
                         channels.add(new Channel(_msgType, receiver));
@@ -100,7 +102,7 @@ public class Bus {
         if (!enableReceive) {
             throw new IllegalArgumentException(obj.getClass().getName() + "是否接提供接收方法?");
         }
-        Bus.channels.put(obj, channels);
+        Bus.receiversSubscribeChannels.put(obj, channels);
 
     }
 
@@ -111,7 +113,7 @@ public class Bus {
      * @return 此消息接收者是否已注册MsgBus true 已注册 false 未注册
      */
     public boolean isRegister(Object obj) {
-        for (Object _obj : channels.keySet()) {
+        for (Object _obj : receiversSubscribeChannels.keySet()) {
             if (_obj == obj) {
                 return true;
             }
@@ -127,9 +129,9 @@ public class Bus {
     public void unregister(Object obj) {
         //TODO 解绑
         Set<Channel> receivers = null;
-        for (Object _obj : channels.keySet()) {
+        for (Object _obj : receiversSubscribeChannels.keySet()) {
             if (_obj == obj) {
-                receivers = channels.remove(_obj);
+                receivers = receiversSubscribeChannels.remove(_obj);
                 break;
             }
         }
@@ -139,8 +141,11 @@ public class Bus {
 
         for (Channel channel : receivers) {
             channel.getMsgType().deleteObserver(channel.getReceiver());
-            Set<Receiver> _receivers = msg2Receivers.get(channel.getMsgType());
+            Set<Receiver> _receivers = msgObservableReceivers.get(channel.getMsgType());
             _receivers.remove(channel.getReceiver());
+            if (_receivers.size() == 0) {
+                msgObservableReceivers.remove(channel.getMsgType());
+            }
         }
     }
 
@@ -160,13 +165,16 @@ public class Bus {
      * @param tag 标记
      */
     public void post(Object msg, String tag) {
+        Log.d("MsgBus", "send Msg -> " + msg.toString() + " with Tag -> " + tag);
+        Log.d("MsgBus", "receivers -> " + receiversSubscribeChannels.size());
+        Log.d("MsgBus", "msgType -> " + msgObservableReceivers.size());
         if (msg == null) {
             throw new IllegalArgumentException("发送的消息不能为空");
         }
         Class<?> msgClass = msg.getClass();
         Set<Class<?>> parentClasses = OnReceiveMsgScanner.getParentClasses(msgClass);
         MsgType msgType = new MsgType(parentClasses, tag);
-        for (MsgType _msgType : msg2Receivers.keySet()) {
+        for (MsgType _msgType : msgObservableReceivers.keySet()) {
             if (msgType.getMsgTypeClasses().containsAll(_msgType.getMsgTypeClasses()) && msgType.getTag().equals(_msgType.getTag())) {
                 _msgType.sendMsg(msg);
             }

@@ -13,6 +13,6 @@ public enum ThreadMode {
 
     MAIN,
 
-    BACKGROUND;
+    BACKGROUND
 
 }

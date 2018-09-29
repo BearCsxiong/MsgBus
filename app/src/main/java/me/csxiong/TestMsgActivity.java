@@ -31,11 +31,11 @@ public class TestMsgActivity extends AppCompatActivity {
     }
 
     public void sendMessage(View view) {
-        MsgBus.get().post("success");
+        MsgBus.get().post(1);
     }
 
     @OnReceiveMsg(target = ThreadMode.MAIN)
-    public void onReceive(Object obj) {
+    public void onReceive(int i) {
         Toast.makeText(this, "I can receive msg", Toast.LENGTH_LONG).show();
     }
 }

@@ -1,5 +1,7 @@
 package me.csxiong.msgbus.entity;
 
+import android.util.Log;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Observable;
@@ -96,6 +98,8 @@ public class Receiver implements Observer {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
+        } finally {
+            Log.d("MsgBus", "method -> "+targetMethod.getName() + " receiveMsg -> " + obj.toString() + " in " + threadMode);
         }
     }
 }
